@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"simplepatientorder/config"
 	"simplepatientorder/internal/model"
 	"simplepatientorder/internal/repository"
 )
@@ -15,7 +14,7 @@ type patient struct {
 	patientRepo repository.Patient
 }
 
-func NewPatient(config *config.Config, patientRepo repository.Patient) Patient {
+func NewPatient(patientRepo repository.Patient) Patient {
 	return &patient{
 		patientRepo: patientRepo,
 	}

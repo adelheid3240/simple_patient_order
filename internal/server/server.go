@@ -15,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Run(config *config.Config, patientHandler handler.Patient) {
+func Run(config *config.Config, patientHandler handler.Patient, patientOrderHandler handler.PatientOrder) {
 	if config.Gin.Mode == gin.DebugMode || config.Gin.Mode == gin.TestMode || config.Gin.Mode == gin.ReleaseMode {
 		gin.SetMode(config.Gin.Mode)
 	}
@@ -23,6 +23,7 @@ func Run(config *config.Config, patientHandler handler.Patient) {
 	ginEngine := gin.Default()
 
 	ginEngine.GET("/patients", patientHandler.List)
+	ginEngine.POST("/patients/:id/orders", patientOrderHandler.Create)
 
 	ginEngine.NoRoute(notFound)
 

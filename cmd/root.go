@@ -23,12 +23,15 @@ var rootCmd = &cobra.Command{
 
 		mongoClient := mongodb.GetMgoCli(cfg)
 		patientRepo := repository.NewPatient(mongoClient)
+		patientOrderRepo := repository.NewPatientOrder(mongoClient)
 
-		patientCtrl := controller.NewPatient(cfg, patientRepo)
+		patientCtrl := controller.NewPatient(patientRepo)
+		patientOrderCtrl := controller.NewPatientOrder(patientOrderRepo)
 
 		patientHandler := handler.NewPatient(patientCtrl)
+		patientOrderHandler := handler.NewPatientOrder(patientOrderCtrl)
 
-		server.Run(cfg, patientHandler)
+		server.Run(cfg, patientHandler, patientOrderHandler)
 	},
 }
 
