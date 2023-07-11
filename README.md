@@ -1,6 +1,14 @@
 # simple_patient_order
 simple project includes crud operations by mongoDB
 
+## api
+```
+GET    /patients                取得patient列表
+POST   /patients/:id/orders     新增該patient的order
+GET    /patients/:id/orders     取得該patient的orders
+PUT    /orders/:id              更新該筆order
+DELETE /orders/:id              刪除該筆order
+```
 
 ## how to run
 Must connect to mongodb first then run the server by commands below.
