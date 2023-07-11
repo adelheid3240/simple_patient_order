@@ -5,6 +5,10 @@ package cmd
 
 import (
 	"simplepatientorder/config"
+	"simplepatientorder/internal/controller"
+	"simplepatientorder/internal/handler"
+	mongodb "simplepatientorder/internal/mongo"
+	"simplepatientorder/internal/repository"
 	"simplepatientorder/internal/server"
 
 	"github.com/spf13/cobra"
@@ -17,7 +21,14 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg := config.New()
 
-		server.Run(cfg)
+		mongoClient := mongodb.GetMgoCli(cfg)
+		patientRepo := repository.NewPatient(mongoClient)
+
+		patientCtrl := controller.NewPatient(cfg, patientRepo)
+
+		patientHandler := handler.NewPatient(patientCtrl)
+
+		server.Run(cfg, patientHandler)
 	},
 }
 

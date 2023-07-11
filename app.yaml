@@ -2,3 +2,9 @@ gin:
   mode: release
 server:
   port: 8080
+db:
+  mongo:
+    host: localhost
+    port: 27017
+    serverSelectionTimeoutSec: 3
+    connectTimeoutSec: 3

@@ -16,6 +16,15 @@ type Config struct {
 		Port               string
 		ShutdownTimeoutSec int // 0 would shut down immediately
 	}
+	DB struct {
+		Mongo struct {
+			Host                      string
+			Port                      string
+			ServerSelectionTimeoutSec int // 0 would be no timeout
+			ConnectTimeoutSec         int // 0 would be no timeout
+			OperationTimeoutSec       int // 0 would be no timeout
+		}
+	}
 }
 
 func New() *Config {

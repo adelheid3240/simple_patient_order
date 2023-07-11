@@ -8,22 +8,21 @@ import (
 	"os"
 	"os/signal"
 	"simplepatientorder/config"
+	"simplepatientorder/internal/handler"
 	"syscall"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Run(config *config.Config) {
+func Run(config *config.Config, patientHandler handler.Patient) {
 	if config.Gin.Mode == gin.DebugMode || config.Gin.Mode == gin.TestMode || config.Gin.Mode == gin.ReleaseMode {
 		gin.SetMode(config.Gin.Mode)
 	}
 
 	ginEngine := gin.Default()
 
-	ginEngine.GET("/", func(c *gin.Context) {
-		c.JSON(200, "ok")
-	})
+	ginEngine.GET("/patients", patientHandler.List)
 
 	ginEngine.NoRoute(notFound)
 
