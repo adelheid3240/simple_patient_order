@@ -28,6 +28,8 @@ $ go run main.go config
 
 - internal/repository: Only this layer can interact with db.
 
+- script: stores any db script including init, migration....
+
 ## how to test
 Can take a look to internal/controller/patient_test.go
 
