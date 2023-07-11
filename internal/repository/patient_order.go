@@ -14,6 +14,7 @@ type PatientOrder interface {
 	Create(ctx context.Context, order *model.PatientOrder) error
 	List(ctx context.Context, patientID string) ([]model.PatientOrder, error)
 	Update(ctx context.Context, order *model.PatientOrder) error
+	Delete(ctx context.Context, orderID string) error
 }
 
 type patienteOrder struct {
@@ -70,6 +71,20 @@ func (p *patienteOrder) Update(ctx context.Context, order *model.PatientOrder) e
 	_, err = p.collection.UpdateByID(ctx, id, update)
 	if err != nil {
 		return errors.Wrap(err, "failed to update patient order")
+	}
+
+	return nil
+}
+
+func (p *patienteOrder) Delete(ctx context.Context, orderID string) error {
+	id, err := primitive.ObjectIDFromHex(orderID)
+	if err != nil {
+		return errors.Wrap(err, "failed to get object id from order id")
+	}
+
+	_, err = p.collection.DeleteOne(ctx, bson.D{{"_id", id}})
+	if err != nil {
+		return errors.Wrap(err, "failed to delete patient order")
 	}
 
 	return nil

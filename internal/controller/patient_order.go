@@ -11,6 +11,7 @@ type PatientOrder interface {
 	Create(ctx context.Context, patientID, message string) error
 	List(ctx context.Context, patientID string) ([]model.PatientOrder, error)
 	Update(ctx context.Context, id string, message string) error
+	Delete(ctx context.Context, id string) error
 }
 
 type patientOrder struct {
@@ -42,4 +43,8 @@ func (p *patientOrder) Update(ctx context.Context, id string, message string) er
 		Message:     message,
 		UpdatedTime: time.Now().UnixMilli(),
 	})
+}
+
+func (p *patientOrder) Delete(ctx context.Context, id string) error {
+	return p.patientOrderRepo.Delete(ctx, id)
 }

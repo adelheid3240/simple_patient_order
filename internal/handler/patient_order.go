@@ -13,6 +13,7 @@ type PatientOrder interface {
 	Create(c *gin.Context)
 	List(c *gin.Context)
 	Update(c *gin.Context)
+	Delete(c *gin.Context)
 }
 
 type patientOrder struct {
@@ -84,6 +85,21 @@ func (p *patientOrder) Update(c *gin.Context) {
 	}
 
 	if err := p.patientOrderCtrl.Update(c, orderID, order.Message); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, "")
+}
+
+func (p *patientOrder) Delete(c *gin.Context) {
+	orderID := c.Param("id")
+	if orderID == "" {
+		c.AbortWithError(http.StatusForbidden, errors.New("invalid params"))
+		return
+	}
+
+	if err := p.patientOrderCtrl.Delete(c, orderID); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
