@@ -6,12 +6,14 @@ import (
 
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type PatientOrder interface {
 	Create(ctx context.Context, order *model.PatientOrder) error
 	List(ctx context.Context, patientID string) ([]model.PatientOrder, error)
+	Update(ctx context.Context, order *model.PatientOrder) error
 }
 
 type patienteOrder struct {
@@ -56,4 +58,19 @@ func (p *patienteOrder) List(ctx context.Context, patientID string) ([]model.Pat
 	}
 
 	return orders, nil
+}
+
+func (p *patienteOrder) Update(ctx context.Context, order *model.PatientOrder) error {
+	id, err := primitive.ObjectIDFromHex(order.ID)
+	if err != nil {
+		return errors.Wrap(err, "failed to get object id from order id")
+	}
+	update := bson.D{{"$set", bson.D{{"message", order.Message}, {"updated_time", order.UpdatedTime}}}}
+
+	_, err = p.collection.UpdateByID(ctx, id, update)
+	if err != nil {
+		return errors.Wrap(err, "failed to update patient order")
+	}
+
+	return nil
 }

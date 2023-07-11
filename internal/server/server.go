@@ -25,6 +25,7 @@ func Run(config *config.Config, patientHandler handler.Patient, patientOrderHand
 	ginEngine.GET("/patients", patientHandler.List)
 	ginEngine.POST("/patients/:id/orders", patientOrderHandler.Create)
 	ginEngine.GET("/patients/:id/orders", patientOrderHandler.List)
+	ginEngine.PUT("/orders/:id", patientOrderHandler.Update)
 
 	ginEngine.NoRoute(notFound)
 

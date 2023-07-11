@@ -1,6 +1,6 @@
 package dto
 
-type CreatePatientOrder struct {
+type CreateOrUpdatePatientOrder struct {
 	Message string `json:"message"`
 }
 

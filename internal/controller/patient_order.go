@@ -10,6 +10,7 @@ import (
 type PatientOrder interface {
 	Create(ctx context.Context, patientID, message string) error
 	List(ctx context.Context, patientID string) ([]model.PatientOrder, error)
+	Update(ctx context.Context, id string, message string) error
 }
 
 type patientOrder struct {
@@ -27,9 +28,18 @@ func (p *patientOrder) Create(ctx context.Context, patientID, message string) er
 		PatientID:   patientID,
 		Message:     message,
 		CreatedTime: time.Now().UnixMilli(),
+		UpdatedTime: time.Now().UnixMilli(),
 	})
 }
 
 func (p *patientOrder) List(ctx context.Context, patientID string) ([]model.PatientOrder, error) {
 	return p.patientOrderRepo.List(ctx, patientID)
+}
+
+func (p *patientOrder) Update(ctx context.Context, id string, message string) error {
+	return p.patientOrderRepo.Update(ctx, &model.PatientOrder{
+		ID:          id,
+		Message:     message,
+		UpdatedTime: time.Now().UnixMilli(),
+	})
 }

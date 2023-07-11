@@ -10,4 +10,5 @@ type PatientOrder struct {
 	PatientID   string `bson:"patient_id"`
 	Message     string `bson:"message"`
 	CreatedTime int64  `bson:"created_time"`
+	UpdatedTime int64  `bson:"updated_time"`
 }

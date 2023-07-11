@@ -12,6 +12,7 @@ import (
 type PatientOrder interface {
 	Create(c *gin.Context)
 	List(c *gin.Context)
+	Update(c *gin.Context)
 }
 
 type patientOrder struct {
@@ -31,7 +32,7 @@ func (p *patientOrder) Create(c *gin.Context) {
 		return
 	}
 
-	order := dto.CreatePatientOrder{}
+	order := dto.CreateOrUpdatePatientOrder{}
 	if err := c.BindJSON(&order); err != nil {
 		c.AbortWithError(http.StatusForbidden, err)
 		return
@@ -67,4 +68,25 @@ func (p *patientOrder) List(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, dto.ListPatientOrderResp{Orders: respOrders})
+}
+
+func (p *patientOrder) Update(c *gin.Context) {
+	orderID := c.Param("id")
+	if orderID == "" {
+		c.AbortWithError(http.StatusForbidden, errors.New("invalid params"))
+		return
+	}
+
+	order := dto.CreateOrUpdatePatientOrder{}
+	if err := c.BindJSON(&order); err != nil {
+		c.AbortWithError(http.StatusForbidden, err)
+		return
+	}
+
+	if err := p.patientOrderCtrl.Update(c, orderID, order.Message); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, "")
 }
