@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"simplepatientorder/internal/apierr"
 	"simplepatientorder/internal/controller"
 	"simplepatientorder/internal/dto"
 
@@ -25,7 +26,7 @@ func NewPatient(patientCtrl controller.Patient) Patient {
 func (p *patient) List(c *gin.Context) {
 	patients, err := p.patientCtrl.List(c, 5) // if need paging can add page params
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, apierr.ErrInternal.SetErr(err))
 		return
 	}
 

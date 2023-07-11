@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
+	"simplepatientorder/internal/apierr"
 	"simplepatientorder/internal/controller"
 	"simplepatientorder/internal/dto"
 
@@ -29,18 +29,18 @@ func NewPatientOrder(patientOrderCtrl controller.PatientOrder) PatientOrder {
 func (p *patientOrder) Create(c *gin.Context) {
 	patientID := c.Param("id")
 	if patientID == "" {
-		c.AbortWithError(http.StatusForbidden, errors.New("invalid params"))
+		c.AbortWithError(http.StatusForbidden, apierr.ErrInvalidParam)
 		return
 	}
 
 	order := dto.CreateOrUpdatePatientOrder{}
 	if err := c.BindJSON(&order); err != nil {
-		c.AbortWithError(http.StatusForbidden, err)
+		c.AbortWithError(http.StatusForbidden, apierr.ErrInvalidParam.SetErr(err))
 		return
 	}
 
 	if err := p.patientOrderCtrl.Create(c, patientID, order.Message); err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, apierr.ErrInternal.SetErr(err))
 		return
 	}
 
@@ -50,13 +50,13 @@ func (p *patientOrder) Create(c *gin.Context) {
 func (p *patientOrder) List(c *gin.Context) {
 	patientID := c.Param("id")
 	if patientID == "" {
-		c.AbortWithError(http.StatusForbidden, errors.New("invalid params"))
+		c.AbortWithError(http.StatusForbidden, apierr.ErrInvalidParam)
 		return
 	}
 
 	orders, err := p.patientOrderCtrl.List(c, patientID)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, apierr.ErrInternal.SetErr(err))
 		return
 	}
 
@@ -74,18 +74,18 @@ func (p *patientOrder) List(c *gin.Context) {
 func (p *patientOrder) Update(c *gin.Context) {
 	orderID := c.Param("id")
 	if orderID == "" {
-		c.AbortWithError(http.StatusForbidden, errors.New("invalid params"))
+		c.AbortWithError(http.StatusForbidden, apierr.ErrInvalidParam)
 		return
 	}
 
 	order := dto.CreateOrUpdatePatientOrder{}
 	if err := c.BindJSON(&order); err != nil {
-		c.AbortWithError(http.StatusForbidden, err)
+		c.AbortWithError(http.StatusForbidden, apierr.ErrInvalidParam.SetErr(err))
 		return
 	}
 
 	if err := p.patientOrderCtrl.Update(c, orderID, order.Message); err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, apierr.ErrInternal.SetErr(err))
 		return
 	}
 
@@ -95,12 +95,12 @@ func (p *patientOrder) Update(c *gin.Context) {
 func (p *patientOrder) Delete(c *gin.Context) {
 	orderID := c.Param("id")
 	if orderID == "" {
-		c.AbortWithError(http.StatusForbidden, errors.New("invalid params"))
+		c.AbortWithError(http.StatusForbidden, apierr.ErrInvalidParam)
 		return
 	}
 
 	if err := p.patientOrderCtrl.Delete(c, orderID); err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, apierr.ErrInternal.SetErr(err))
 		return
 	}
 

@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"simplepatientorder/config"
 	"simplepatientorder/internal/handler"
+	"simplepatientorder/internal/middleware"
 	"syscall"
 	"time"
 
@@ -21,6 +22,7 @@ func Run(config *config.Config, patientHandler handler.Patient, patientOrderHand
 	}
 
 	ginEngine := gin.Default()
+	ginEngine.Use(middleware.ErrorHandler)
 
 	ginEngine.GET("/patients", patientHandler.List)
 	ginEngine.POST("/patients/:id/orders", patientOrderHandler.Create)
