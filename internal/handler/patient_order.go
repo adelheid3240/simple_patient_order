@@ -11,6 +11,7 @@ import (
 
 type PatientOrder interface {
 	Create(c *gin.Context)
+	List(c *gin.Context)
 }
 
 type patientOrder struct {
@@ -42,4 +43,28 @@ func (p *patientOrder) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, "")
+}
+
+func (p *patientOrder) List(c *gin.Context) {
+	patientID := c.Param("id")
+	if patientID == "" {
+		c.AbortWithError(http.StatusForbidden, errors.New("invalid params"))
+		return
+	}
+
+	orders, err := p.patientOrderCtrl.List(c, patientID)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	respOrders := make([]dto.PatientOrder, len(orders))
+	for i, po := range orders {
+		respOrders[i] = dto.PatientOrder{
+			ID:      po.ID,
+			Message: po.Message,
+		}
+	}
+
+	c.JSON(http.StatusOK, dto.ListPatientOrderResp{Orders: respOrders})
 }
